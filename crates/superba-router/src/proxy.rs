@@ -745,6 +745,11 @@ async fn send(
     };
     let url = join_path(base, rest, parts.uri.query());
     let mut headers = request_headers(&parts.headers, false, drop_turn_state, &member.auth);
+    if let Some(route) = parts.extensions.get::<crate::catalog::ValidatorRoute>()
+        && route.0.to_str().ok() != Some(generation.label(c.member, c.line).as_str())
+    {
+        headers.remove(http::header::IF_NONE_MATCH);
+    }
     if ingress == Ingress::OpenAi {
         // The answer is read for the request log.
         headers.remove(http::header::ACCEPT_ENCODING);
