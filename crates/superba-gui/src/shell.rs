@@ -1468,15 +1468,11 @@ fn choices(
                     ),
                     pal,
                 ));
+                ui.label(Text::body(tr.t("banner.restore.reverse_note"), pal));
+                ui.label(Text::muted(tr.t("banner.restore.keep_note"), pal));
                 ui.horizontal_wrapped(|ui| {
                     if ui
-                        .add(Button::primary(tr.t("banner.restore.keep")).small())
-                        .clicked()
-                    {
-                        flow.answer_restore_provider(ProviderRestore::KeepOpenai, now);
-                    }
-                    if ui
-                        .add(Button::new(tr.t("banner.restore.reverse")).small())
+                        .add(Button::primary(tr.t("banner.restore.reverse")).small())
                         .clicked()
                     {
                         flow.answer_restore_provider(
@@ -1485,6 +1481,12 @@ fn choices(
                             },
                             now,
                         );
+                    }
+                    if ui
+                        .add(Button::new(tr.t("banner.restore.keep")).small())
+                        .clicked()
+                    {
+                        flow.answer_restore_provider(ProviderRestore::KeepOpenai, now);
                     }
                     if ui
                         .add(Button::new(tr.t("banner.restore.exact")).small())

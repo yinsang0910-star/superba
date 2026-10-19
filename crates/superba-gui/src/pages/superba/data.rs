@@ -2,7 +2,7 @@
 use super::{Action, Cx, Page, row, section};
 use crate::design::widgets::{Button, Card};
 use egui::Ui;
-use superba_core::{ProviderRestore, RestoreTarget, Settings};
+use superba_core::{RestoreTarget, Settings};
 /// Draw this section and save changes immediately.
 pub fn show(ui: &mut Ui, cx: &Cx<'_>, settings: &mut Settings, out: &mut Vec<Action>) {
     let before = settings.clone();
@@ -67,9 +67,7 @@ pub fn show(ui: &mut Ui, cx: &Cx<'_>, settings: &mut Settings, out: &mut Vec<Act
                     )
                     .clicked()
                 {
-                    out.push(Action::Restore(RestoreTarget::Original {
-                        provider: ProviderRestore::KeepOpenai,
-                    }));
+                    out.push(Action::restore_original());
                 }
             },
         );
