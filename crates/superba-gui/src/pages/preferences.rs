@@ -245,6 +245,7 @@ pub fn show(
     cx: &Cx<'_>,
     settings: &mut Settings,
     notify: &mut super::notify::State,
+    data: &mut super::data::State,
     out: &mut Vec<Action>,
 ) {
     page_header(ui, cx, Page::Preferences, |_| {});
@@ -463,42 +464,7 @@ pub fn show(
     super::notify::section_ui(ui, cx, settings, notify, out);
 
     ui.add_space(24.0);
-    section(ui, cx, &cx.tr.t("prefs.data.title"), None);
-    Card::new().flat().show(ui, |ui| {
-        let dir = cx
-            .data
-            .paths
-            .as_ref()
-            .map(|p| superba_core::paths::display_path(&p.data_dir))
-            .unwrap_or_default();
-        row(ui, cx, &cx.tr.t("prefs.data.dir"), &dir, false, |ui| {
-            if ui
-                .add(
-                    Button::new(cx.tr.t("prefs.data.open_dir"))
-                        .small()
-                        .enabled(cx.data.paths.is_some()),
-                )
-                .clicked()
-            {
-                out.push(Action::OpenDataDir);
-            }
-        });
-        row(
-            ui,
-            cx,
-            &cx.tr.t("prefs.data.requests"),
-            &cx.tr.t("prefs.data.retention_moved"),
-            true,
-            |ui| {
-                if ui
-                    .add(Button::ghost(cx.tr.t("prefs.data.open_router")).small())
-                    .clicked()
-                {
-                    out.push(Action::Go(Page::Router));
-                }
-            },
-        );
-    });
+    super::data::section_ui(ui, cx, settings, data, out);
 
     ui.add_space(24.0);
     section(ui, cx, &cx.tr.t("prefs.wizard.title"), None);

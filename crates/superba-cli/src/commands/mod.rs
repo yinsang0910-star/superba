@@ -3,6 +3,7 @@
 mod account;
 mod claude;
 mod config;
+mod data;
 mod execute;
 mod handoff;
 mod harness;
@@ -96,6 +97,7 @@ pub(crate) fn request(intent: SwitchIntent, exec: &ExecArgs) -> SwitchRequest {
 
 pub(crate) async fn dispatch(command: &Command, rt: &Runtime, out: &mut Output) -> Result {
     match command {
+        Command::Data { command } => data::run(command, rt, out).await,
         Command::Status => status::run(rt, out).await,
         Command::Lines { site, probe } => lines::run(site, *probe, rt, out).await,
         Command::Key { command } => key::run(command, rt, out).await,

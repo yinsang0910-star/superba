@@ -37,7 +37,9 @@ fn channels_test_button_and_hooks() {
     // The palette's "Notifications" scrolls the section into view.
     h.frame(|_, cx, _| notify::command(&mut state, cx, "notify:show"));
     let f = h.until(
-        |ui, cx, out| preferences::show(ui, cx, &mut prefs, &mut state, out),
+        |ui, cx, out| {
+            preferences::show(ui, cx, &mut prefs, &mut state, &mut Default::default(), out)
+        },
         |f| f.has("My phone") && f.has("在 Codex 中信任"),
     );
     for want in [
@@ -70,7 +72,9 @@ fn channels_test_button_and_hooks() {
         .expect("a test button");
     h.click_at(test.center());
     let f = h.until(
-        |ui, cx, out| preferences::show(ui, cx, &mut prefs, &mut state, out),
+        |ui, cx, out| {
+            preferences::show(ui, cx, &mut prefs, &mut state, &mut Default::default(), out)
+        },
         |f| f.has("已送达（12 毫秒）"),
     );
     let sends = service.notify_sends();
@@ -90,13 +94,17 @@ fn the_add_dialog_checks_fields_in_the_users_language() {
     h.frame(|_, cx, _| notify::command(&mut state, cx, "notify:add"));
     assert!(state.editor().is_some());
     let f = h.until(
-        |ui, cx, out| preferences::show(ui, cx, &mut prefs, &mut state, out),
+        |ui, cx, out| {
+            preferences::show(ui, cx, &mut prefs, &mut state, &mut Default::default(), out)
+        },
         |f| f.has("添加通知渠道"),
     );
     assert!(f.has("机器人 Token") && f.has("Chat ID") && f.has("@BotFather"));
     h.click_text(&f, "保存");
     let f = h.until(
-        |ui, cx, out| preferences::show(ui, cx, &mut prefs, &mut state, out),
+        |ui, cx, out| {
+            preferences::show(ui, cx, &mut prefs, &mut state, &mut Default::default(), out)
+        },
         |f| f.has("请填写机器人 Token"),
     );
     assert!(f.has("添加通知渠道"), "the dialog stays open");
@@ -135,7 +143,9 @@ fn adding_a_kind_from_the_palette_opens_its_form() {
         Some(ChannelKind::ServerChan)
     );
     let f = h.until(
-        |ui, cx, out| preferences::show(ui, cx, &mut prefs, &mut state, out),
+        |ui, cx, out| {
+            preferences::show(ui, cx, &mut prefs, &mut state, &mut Default::default(), out)
+        },
         |f| f.has("SendKey"),
     );
     // Said plainly: the message goes through a third party.

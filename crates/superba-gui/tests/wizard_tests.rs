@@ -390,7 +390,14 @@ async fn every_entry_point_opens_the_wizard_with_an_existing_profile() {
                 service: &dyn_service,
                 log: &[],
             };
-            preferences::show(ui, &cx, &mut settings, &mut notify, &mut out);
+            preferences::show(
+                ui,
+                &cx,
+                &mut settings,
+                &mut notify,
+                &mut Default::default(),
+                &mut out,
+            );
         };
         // The row title and its button share the text: the button is drawn last.
         assert!(tall.click_last_text(&tr.t("prefs.wizard.run"), &mut prefs));
