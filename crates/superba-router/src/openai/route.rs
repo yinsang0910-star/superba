@@ -124,6 +124,7 @@ async fn lists_within(
 pub(crate) async fn all_models(
     shared: &Shared,
     generation: &Arc<Generation>,
+    bound: Option<&str>,
 ) -> Vec<(Listed, usize)> {
     let members: Vec<usize> = generation
         .openai
@@ -132,7 +133,8 @@ pub(crate) async fn all_models(
         .copied()
         .filter(|m| {
             let o = &generation.openai.members[*m];
-            o.responses.is_some() || o.chat.is_some()
+            (o.responses.is_some() || o.chat.is_some())
+                && bound.is_none_or(|id| generation.members[*m].cfg.id == id)
         })
         .collect();
     let lists =
@@ -200,8 +202,14 @@ pub(crate) async fn resolve(
     generation: &Arc<Generation>,
     protocol: OpenAiProtocol,
     model: Option<&str>,
+    bound: Option<&str>,
 ) -> Result<Vec<Target>, Refusal> {
-    let serving = generation.openai.serving(protocol);
+    let serving: Vec<_> = generation
+        .openai
+        .serving(protocol)
+        .into_iter()
+        .filter(|m| bound.is_none_or(|id| generation.members[*m].cfg.id == id))
+        .collect();
     if serving.is_empty() {
         return Err((404, "no_provider", nobody(generation, protocol)));
     }

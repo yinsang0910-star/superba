@@ -32,6 +32,7 @@ pub mod core_watch;
 pub mod executor;
 mod files;
 pub mod harness;
+mod harness_router;
 pub mod hosts;
 mod import;
 pub mod journal;

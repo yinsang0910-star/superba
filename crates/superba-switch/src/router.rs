@@ -541,13 +541,15 @@ impl Switcher {
             }
         }
         keys.extend(claude.keys);
-        if out.is_empty() {
+        let mut config = RouterConfig::new(0, out);
+        config.claude = Some(claude.section);
+        self.add_harness_router_members(set, &mut config, &mut keys)
+            .await?;
+        if config.members.is_empty() {
             return Err(Error::invalid(
                 "the router needs at least one member profile",
             ));
         }
-        let mut config = RouterConfig::new(0, out);
-        config.claude = Some(claude.section);
         config.validate()?;
         Ok(BuiltMembers { config, keys })
     }
